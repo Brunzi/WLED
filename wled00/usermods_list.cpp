@@ -249,8 +249,8 @@ void registerUsermods()
    * || || ||
    * \/ \/ \/
    */
-  //UsermodManager::add(new MyExampleUsermod());
-
+  
+  //usermods.add(new MyExampleUsermod());
   #ifdef USERMOD_BATTERY
   UsermodManager::add(new UsermodBattery());
   #endif
