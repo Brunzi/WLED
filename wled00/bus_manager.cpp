@@ -292,6 +292,14 @@ bool BusDigital::canShow() const {
 }
 
 void BusDigital::setBrightness(uint8_t b) {
+  /*
+  if (_skip){  //exclude Status-LED from brightness control
+    if(_bri != 255){
+      Bus::setBrightness(255);
+      PolyBus::setBrightness(_busPtr, _iType, 255);
+    } 
+    return;
+  }*/
   if (_bri == b) return;
   Bus::setBrightness(b);
   PolyBus::setBrightness(_busPtr, _iType, b);
@@ -301,6 +309,8 @@ void BusDigital::setBrightness(uint8_t b) {
 //TODO only show if no new show due in the next 50ms
 void BusDigital::setStatusPixel(uint32_t c) {
   if (_valid && _skip) {
+    Bus::setBrightness(255);
+    PolyBus::setBrightness(_busPtr, _iType, 255);
     PolyBus::setPixelColor(_busPtr, _iType, 0, c, _colorOrderMap.getPixelColorOrder(_start, _colorOrder));
     if (canShow()) PolyBus::show(_busPtr, _iType);
   }

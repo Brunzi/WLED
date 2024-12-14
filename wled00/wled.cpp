@@ -571,7 +571,9 @@ void WLED::beginStrip()
   strip.makeAutoSegments();
   strip.setBrightness(0);
   strip.setShowCallback(handleOverlayDraw);
-
+  #if defined(STATUSLED)
+  handleStatusLED();
+  #endif
   if (turnOnAtBoot) {
     if (briS > 0) bri = briS;
     else if (bri == 0) bri = 128;
@@ -1035,46 +1037,61 @@ void WLED::handleConnection()
 // else blink at 2Hz when MQTT is enabled but not connected
 // else turn the status LED off
 #if defined(STATUSLED)
+
+
 void WLED::handleStatusLED()
 {
-  uint32_t c = 0;
-
-  #if STATUSLED>=0
-  if (PinManager::isPinAllocated(STATUSLED)) {
-    return; //lower priority if something else uses the same pin
-  }
-  #endif
-
-  if (WLED_CONNECTED) {
-    c = RGBW32(0,255,0,0);
-    ledStatusType = 2;
-  } else if (WLED_MQTT_CONNECTED) {
-    c = RGBW32(0,128,0,0);
-    ledStatusType = 4;
-  } else if (apActive) {
-    c = RGBW32(0,0,255,0);
-    ledStatusType = 1;
-  }
-  if (ledStatusType) {
-    if (millis() - ledStatusLastMillis >= (1000/ledStatusType)) {
-      ledStatusLastMillis = millis();
-      ledStatusState = !ledStatusState;
-      #if STATUSLED>=0
-      digitalWrite(STATUSLED, ledStatusState);
-      #else
-      BusManager::setStatusPixel(ledStatusState ? c : 0);
-      #endif
+  //Green sild when connected
+  if (WLED_CONNECTED && (realtimeMode == REALTIME_MODE_INACTIVE)) {
+    if(bri == 0){
+      c_Status = RGBW32(230,50,0,0); 
     }
-  } else {
-    #if STATUSLED>=0
-      #ifdef STATUSLEDINVERTED
-      digitalWrite(STATUSLED, HIGH);
-      #else
-      digitalWrite(STATUSLED, LOW);
-      #endif
-    #else
-      BusManager::setStatusPixel(0);
-    #endif
+    else {
+      c_Status = RGBW32(0,255,0,0); 
+    }
+      
+    ledStatusType = 0;
   }
+  //Green blink when reeiving E1.31 or Art-Net
+  else if (WLED_CONNECTED && ((realtimeMode == REALTIME_MODE_E131) || (realtimeMode == REALTIME_MODE_ARTNET))) {
+    if(bri == 0){
+      c_Status = RGBW32(230,50,0,0); 
+    }
+    else {
+      c_Status = RGBW32(0,255,0,0); 
+    }
+    ledStatusType = 1;
+
+  } 
+  //Red solid when disconnected
+  else if (!WLED_CONNECTED) {
+    c_Status = RGBW32(255,0,0,0);
+    ledStatusType = 0;
+  }
+  //Purple solid during OTA-Update
+  if (otaStarted == true) {
+    c_Status = RGBW32(128,0,128,0);
+    ledStatusType = 0;
+  }
+
+  if (ledStatusType > 0) {  //blink routine
+    if ((millis() - ledStatusLastMillis) > 500) {
+      ledStatusLastMillis = millis();
+      statusBlink = !statusBlink;
+      
+    } 
+    if(statusBlink == true){ 
+        c_Status = RGBW32(0,0,0,0);
+    }
+  }
+  else {
+    statusBlink = false;
+  }
+  
+  //if (c_Old != c_Status) { //only draw pixels if status-LED has changed
+    busses.setStatusPixel(c_Status);
+    //c_Old = c_Status;
+  //}
+
 }
 #endif

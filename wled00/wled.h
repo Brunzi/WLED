@@ -556,6 +556,7 @@ WLED_GLOBAL byte macroLongPress[WLED_MAX_BUTTONS]     _INIT({0});
 WLED_GLOBAL byte macroDoublePress[WLED_MAX_BUTTONS]   _INIT({0});
 
 // Security CONFIG
+WLED_GLOBAL bool otaStarted  _INIT(false);  // notifies that OTA is going to start
 WLED_GLOBAL bool otaLock     _INIT(false);  // prevents OTA firmware updates without password. ALWAYS enable if system exposed to any public networks
 WLED_GLOBAL bool wifiLock    _INIT(false);  // prevents access to WiFi settings when OTA lock is enabled
 WLED_GLOBAL bool aOtaEnabled _INIT(true);   // ArduinoOTA allows easy updates directly from the IDE. Careful, it does not auto-disable when OTA lock is on
@@ -859,6 +860,9 @@ WLED_GLOBAL bool psramSafe         _INIT(true);         // is it safe to use PSR
 
 // status led
 #if defined(STATUSLED)
+WLED_GLOBAL uint32_t c_Status _INIT(RGBW32(0,0,0,0));
+WLED_GLOBAL bool statusBlink  _INIT(false);
+WLED_GLOBAL uint32_t c_Old _INIT(RGBW32(0,0,0,0));
 WLED_GLOBAL unsigned long ledStatusLastMillis _INIT(0);
 WLED_GLOBAL uint8_t ledStatusType _INIT(0); // current status type - corresponds to number of blinks per second
 WLED_GLOBAL bool ledStatusState _INIT(false); // the current LED state

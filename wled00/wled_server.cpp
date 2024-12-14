@@ -393,6 +393,8 @@ void initServer()
     if (!correctPIN || otaLock) return;
     if(!index){
       DEBUG_PRINTLN(F("OTA Update Start"));
+      otaStarted = true;
+      WLED::instance().handleStatusLED(); //update status-LED
       #if WLED_WATCHDOG_TIMEOUT > 0
       WLED::instance().disableWatchdog();
       #endif
