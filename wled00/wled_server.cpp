@@ -395,7 +395,9 @@ void initServer()
     if(!index){
       DEBUG_PRINTLN(F("OTA Update Start"));
       otaStarted = true;
+      #if defined(STATUSLED)
       WLED::instance().handleStatusLED(); //update status-LED
+      #endif
       #if WLED_WATCHDOG_TIMEOUT > 0
       WLED::instance().disableWatchdog();
       #endif
