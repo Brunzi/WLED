@@ -180,6 +180,7 @@ void WiFiEvent(WiFiEvent_t event)
       break;
     case SYSTEM_EVENT_ETH_CONNECTED:
       {
+      ethLinkState = true;
       DEBUG_PRINTLN(F("ETH Connected"));
       if (!apActive) {
         WiFi.disconnect(true);
@@ -203,6 +204,7 @@ void WiFiEvent(WiFiEvent_t event)
       // may be necessary to reconnect the WiFi when
       // ethernet disconnects, as a way to provide
       // alternative access to the device.
+      ethLinkState = false;
       forceReconnect = true;
       break;
 #endif

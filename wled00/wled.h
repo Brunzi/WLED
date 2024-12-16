@@ -866,6 +866,7 @@ WLED_GLOBAL uint32_t c_Old _INIT(RGBW32(0,0,0,0));
 WLED_GLOBAL unsigned long ledStatusLastMillis _INIT(0);
 WLED_GLOBAL uint8_t ledStatusType _INIT(0); // current status type - corresponds to number of blinks per second
 WLED_GLOBAL bool ledStatusState _INIT(false); // the current LED state
+WLED_GLOBAL bool ethLinkState _INIT(false); //get ethernet link state
 #endif
 
 // server library objects

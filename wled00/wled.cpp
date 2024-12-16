@@ -1041,10 +1041,10 @@ void WLED::handleConnection()
 
 void WLED::handleStatusLED()
 {
-  //Green sild when connected
+  //Green soild when connected, teal when strip powered off
   if (WLED_CONNECTED && (realtimeMode == REALTIME_MODE_INACTIVE)) {
     if(bri == 0){
-      c_Status = RGBW32(230,50,0,0); 
+      c_Status = RGBW32(0,120,120,0); 
     }
     else {
       c_Status = RGBW32(0,255,0,0); 
@@ -1052,10 +1052,10 @@ void WLED::handleStatusLED()
       
     ledStatusType = 0;
   }
-  //Green blink when reeiving E1.31 or Art-Net
+  //Green blink when reeiving E1.31 or Art-Net, teal when strip powered off
   else if (WLED_CONNECTED && ((realtimeMode == REALTIME_MODE_E131) || (realtimeMode == REALTIME_MODE_ARTNET))) {
     if(bri == 0){
-      c_Status = RGBW32(230,50,0,0); 
+      c_Status = RGBW32(0,120,120,0); 
     }
     else {
       c_Status = RGBW32(0,255,0,0); 
@@ -1063,9 +1063,14 @@ void WLED::handleStatusLED()
     ledStatusType = 1;
 
   } 
-  //Red solid when disconnected
+  //Red solid when no link, yellow when no valid ip-connection
   else if (!WLED_CONNECTED) {
-    c_Status = RGBW32(255,0,0,0);
+    if(ethLinkState == true){ 
+      c_Status = RGBW32(230,50,0,0);
+    }
+    else{
+      c_Status = RGBW32(255,0,0,0);
+    }
     ledStatusType = 0;
   }
   //Purple solid during OTA-Update
